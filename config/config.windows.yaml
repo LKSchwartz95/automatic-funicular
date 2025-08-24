@@ -1,0 +1,52 @@
+detector:
+  tshark_path: "C:\\Program Files\\Wireshark\\tshark.exe"
+  interface: "Ethernet"
+  bpf: "tcp"
+  store_raw_secrets: false
+  max_body_kb: 64
+  allowlist_cidrs:
+    - "10.0.0.0/8"
+    - "192.168.0.0/16"
+    - "127.0.0.0/8"
+  protocols:
+    http:
+      enabled: true
+      credential_keys: ["password", "pass", "pwd", "token", "api_key", "secret", "auth", "session"]
+    smtp:
+      enabled: true
+      require_starttls: true
+    imap_pop3:
+      enabled: true
+      require_tls: true
+    ftp:
+      enabled: true
+    telnet:
+      enabled: true
+    tls:
+      enabled: false
+      min_version: "1.2"
+      require_sni: false
+
+events:
+  dir: "events"
+  rotate_every_minutes: 5
+  rotate_max_mb: 10
+  filename_format: "%Y-%m-%d_%H-%M.jsonl"
+
+alerting:
+  console: true
+  webhook:
+    enabled: false
+    url: ""
+
+worker:
+  enabled: true
+  window_minutes: 10
+  reports_dir: "reports"
+  model: "gemma3:1b-se"
+  max_lines_per_window: 500
+
+api:
+  enabled: false
+  host: "127.0.0.1"
+  port: 8088
