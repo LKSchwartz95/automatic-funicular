@@ -11,3 +11,5 @@
 [2025-09-01 10:46:13] INFO: Network detector initialized
 [2025-09-01 10:46:13] INFO: Event writer initialized
 [2025-09-01 10:46:13] INFO: LLM worker components initialized
+[2025-09-01 10:59:55] INFO: Received signal 2, shutting down...
+[2025-09-01 10:59:55] ERROR: Fatal error: 
