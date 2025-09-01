@@ -25,6 +25,7 @@ from detector.network_detector import NetworkDetector
 from detector.writer import RotatingJsonlWriter
 from worker.llm_client import OllamaClient
 from worker.report_generator import ReportGenerator
+from quick_status import show_log_event_status
 
 # Configure logging
 logging.basicConfig(
@@ -323,6 +324,7 @@ class Clearwatch:
             if self.writer:
                 self.writer.close()
             print(f"\nWatch mode completed. Total events captured: {event_count}")
+            show_log_event_status()
             
     def _analysis_mode(self):
         """Execute Analysis Mode - analyze previous captures."""
