@@ -5,4 +5,4 @@ watchfiles>=0.21
 fastapi>=0.104
 uvicorn[standard]>=0.24
 requests>=2.31
-ipaddress2>=1.0
+# ipaddress is built-in to Python 3.3+

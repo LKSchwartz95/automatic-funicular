@@ -268,8 +268,7 @@ class Clearwatch:
 
     def _print_banner(self):
         """Print program banner."""
-        print("
-" + "="*60)
+        print("\n" + "="*60)
         print("                    CLEARWATCH")
         print("        Clear-Text & Weak-Transport Detector")
         print("              with Local LLM Guidance")
@@ -295,14 +294,12 @@ class Clearwatch:
                 else:
                     print("Invalid choice. Please enter 1, 2, or 3.")
             except KeyboardInterrupt:
-                print("
-Exiting...")
+                print("\nExiting...")
                 sys.exit(0)
                 
     def _watch_mode(self):
         """Execute Watch Mode - monitor network traffic."""
-        print("
-" + "="*50)
+        print("\n" + "="*50)
         print("WATCH MODE - Network Traffic Monitoring")
         print("="*50)
         print("Press Ctrl+C to stop monitoring")
@@ -347,21 +344,18 @@ Exiting...")
                     print(f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] ROTATION: Current file: {file_info['path']} ({file_info['size_bytes']} bytes)")
                     
         except KeyboardInterrupt:
-            print("
-Stopping network monitoring...")
+            print("\nStopping network monitoring...")
         except Exception as e:
             logger.error(f"Error in watch mode: {e}")
             print(f"Error: {e}")
         finally:
             if self.writer:
                 self.writer.close()
-            print(f"
-Watch mode completed. Total events captured: {event_count}")
+            print(f"\nWatch mode completed. Total events captured: {event_count}")
             
     def _analysis_mode(self):
         """Execute Analysis Mode - analyze previous captures."""
-        print("
-" + "="*50)
+        print("\n" + "="*50)
         print("ANALYSIS MODE - LLM-Powered Security Analysis")
         print("="*50)
 

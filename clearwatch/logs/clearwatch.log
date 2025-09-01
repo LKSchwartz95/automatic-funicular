@@ -1,0 +1,13 @@
+[2025-09-01 10:46:13] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 10:46:13] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 10:46:13] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 10:46:13] INFO: Configuration validation passed
+[2025-09-01 10:46:13] INFO: Configuration loaded successfully
+[2025-09-01 10:46:13] INFO: Added allowlist network: 10.0.0.0/8
+[2025-09-01 10:46:13] INFO: Added allowlist network: 192.168.0.0/16
+[2025-09-01 10:46:13] INFO: Added allowlist network: 127.0.0.0/8
+[2025-09-01 10:46:13] INFO: Network detector initialized with interface: Ethernet
+[2025-09-01 10:46:13] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 10:46:13] INFO: Network detector initialized
+[2025-09-01 10:46:13] INFO: Event writer initialized
+[2025-09-01 10:46:13] INFO: LLM worker components initialized
