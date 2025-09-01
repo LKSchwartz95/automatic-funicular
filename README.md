@@ -272,28 +272,53 @@ clearwatch/
 - **Audit logging**: Track all monitoring activities
 - **Privacy by design**: Minimal data collection
 
-## Roadmap
+## Implementation Status
 
-### Sprint 1 (Current) ✅
-- [x] Core detection engine
-- [x] Real-time monitoring
-- [x] File rotation and management
-- [x] Windows configuration
+### ✅ Sprint 1 - Core Detection Engine (COMPLETE)
+- [x] Core detection engine with tshark integration
+- [x] Real-time network monitoring and packet capture
+- [x] Thread-safe file rotation and management
+- [x] Windows configuration with platform-specific loading
+- [x] All protocol detection rules (HTTP, SMTP, POP3/IMAP, FTP, TELNET, TLS)
+- [x] Event model with Pydantic validation
+- [x] Allowlist filtering and privacy protection
+- [x] Console alerts with severity levels and color coding
 
-### Sprint 2 (Next)
-- [ ] LLM integration with Ollama
-- [ ] Professional security reports
-- [ ] Analysis mode implementation
+### ✅ Sprint 2 - LLM Integration (COMPLETE)
+- [x] Ollama client integration for local LLM processing
+- [x] Professional security report generation
+- [x] Analysis mode with multi-file processing
+- [x] Security-focused prompt templates
+- [x] Graceful LLM fallback when unavailable
+- [x] Executive-level security intelligence reports
 
-### Sprint 3
-- [ ] FastAPI server
-- [ ] Runtime mode switching
-- [ ] Service deployment
+### ✅ Sprint 3 - API & Operations (COMPLETE)
+- [x] FastAPI server with RESTful endpoints
+- [x] `/alerts/recent` - Retrieve recent security events
+- [x] `/alerts/explain` - LLM-powered event analysis
+- [x] CLI arguments (`--config`, `--mode`) for automation
+- [x] Background API process integration
+- [x] Windows Task Scheduler deployment template
+- [x] Linux systemd service deployment template
+- [x] Non-interactive mode support
 
-### Sprint 4
-- [ ] Advanced protocol detection
-- [ ] Performance optimization
-- [ ] Extended reporting
+### 🔄 Sprint 4 - Hardening & Advanced Features (IN PROGRESS)
+- [ ] Extract protocol parsing into separate `*_rules.py` modules with unit tests
+- [ ] Fix TLS detection bug in event creation
+- [ ] Add webhook integration for real-time alerts
+- [ ] Implement PCAP ingestion mode
+- [ ] Add SQLite persistence for advanced querying
+- [ ] Performance monitoring and metrics collection
+- [ ] Advanced pattern detection and correlation
+- [ ] Export functionality for compliance reporting
+
+### ❌ Future Enhancements
+- [ ] Linux/macOS configuration files
+- [ ] Slack/Discord webhook integration
+- [ ] Nmap integration for asset enrichment
+- [ ] Advanced TLS analysis (certificate validation)
+- [ ] Machine learning-based anomaly detection
+- [ ] Multi-interface monitoring support
 
 ## Contributing
 
