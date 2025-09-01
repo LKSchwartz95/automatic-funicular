@@ -1,13 +1,14 @@
 detector:
   tshark_path: "C:\\Program Files\\Wireshark\\tshark.exe"
-  interface: "Ethernet"
+  interface: "Wi-Fi"  # Changed from Ethernet to Wi-Fi
   bpf: "tcp"
   store_raw_secrets: false
   max_body_kb: 64
-  allowlist_cidrs:
-    - "10.0.0.0/8"
-    - "192.168.0.0/16"
-    - "127.0.0.0/8"
+  allowlist_cidrs: []
+    # Temporarily disabled for testing - uncomment to filter out private networks
+    # - "10.0.0.0/8"
+    # - "192.168.0.0/16"
+    # - "127.0.0.0/8"
   protocols:
     http:
       enabled: true
@@ -26,6 +27,12 @@ detector:
       enabled: false
       min_version: "1.2"
       require_sni: false
+    smb:
+      enabled: true
+      detect_plaintext_auth: true
+    dns:
+      enabled: true
+      detect_tunneling: true
 
 events:
   dir: "events"

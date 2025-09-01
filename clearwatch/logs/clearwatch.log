@@ -13,3 +13,244 @@
 [2025-09-01 10:46:13] INFO: LLM worker components initialized
 [2025-09-01 10:59:55] INFO: Received signal 2, shutting down...
 [2025-09-01 10:59:55] ERROR: Fatal error: 
+[2025-09-01 11:19:59] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 11:20:00] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 11:20:00] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 11:20:00] INFO: Configuration validation passed
+[2025-09-01 11:20:00] INFO: Configuration loaded successfully
+[2025-09-01 11:20:00] INFO: Added allowlist network: 10.0.0.0/8
+[2025-09-01 11:20:00] INFO: Added allowlist network: 192.168.0.0/16
+[2025-09-01 11:20:00] INFO: Added allowlist network: 127.0.0.0/8
+[2025-09-01 11:20:00] INFO: Network detector initialized with interface: Ethernet
+[2025-09-01 11:20:00] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 11:20:00] INFO: Network detector initialized
+[2025-09-01 11:20:00] INFO: Event writer initialized
+[2025-09-01 11:20:00] INFO: LLM worker components initialized
+[2025-09-01 11:20:03] INFO: Starting packet capture with command: C:\Program Files\Wireshark\tshark.exe -i Ethernet -l -T json -n -o tcp.desegment_tcp_streams:true -o http.desegment_body:true -Y http or smtp or pop or imap or ftp or telnet -f tcp
+[2025-09-01 11:20:03] INFO: Tshark process started with PID: 16260
+[2025-09-01 11:20:49] INFO: Received signal 2, shutting down...
+[2025-09-01 11:20:49] INFO: Tshark process terminated
+[2025-09-01 11:20:59] ERROR: Ollama service is not available. Cannot generate report.
+[2025-09-01 11:21:10] INFO: Scanning for events in the last 10 minutes...
+[2025-09-01 11:21:10] INFO: Found 0 events in the time window.
+[2025-09-01 11:21:10] INFO: No recent events found to analyze.
+[2025-09-01 11:21:26] INFO: Starting packet capture with command: C:\Program Files\Wireshark\tshark.exe -i Ethernet -l -T json -n -o tcp.desegment_tcp_streams:true -o http.desegment_body:true -Y http or smtp or pop or imap or ftp or telnet -f tcp
+[2025-09-01 11:21:26] INFO: Tshark process started with PID: 17316
+[2025-09-01 11:22:33] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 11:22:33] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 11:22:33] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 11:22:33] INFO: Configuration validation passed
+[2025-09-01 11:22:33] INFO: Configuration loaded successfully
+[2025-09-01 11:22:33] INFO: Added allowlist network: 10.0.0.0/8
+[2025-09-01 11:22:33] INFO: Added allowlist network: 192.168.0.0/16
+[2025-09-01 11:22:33] INFO: Added allowlist network: 127.0.0.0/8
+[2025-09-01 11:22:33] INFO: Network detector initialized with interface: Ethernet
+[2025-09-01 11:22:33] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 11:22:33] INFO: Network detector initialized
+[2025-09-01 11:22:33] INFO: Event writer initialized
+[2025-09-01 11:22:33] INFO: LLM worker components initialized
+[2025-09-01 11:22:33] INFO: Starting packet capture with command: C:\Program Files\Wireshark\tshark.exe -i Ethernet -l -T json -n -o tcp.desegment_tcp_streams:true -o http.desegment_body:true -Y http or smtp or pop or imap or ftp or telnet -f tcp
+[2025-09-01 11:22:33] INFO: Tshark process started with PID: 10356
+[2025-09-01 11:46:11] INFO: Received signal 2, shutting down...
+[2025-09-01 11:46:11] INFO: Tshark process terminated
+[2025-09-01 11:46:16] INFO: Created clearwatch folder structure
+[2025-09-01 11:46:16] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 11:46:16] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 11:46:16] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 11:46:16] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 11:46:16] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 11:46:16] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 11:46:16] INFO: Configuration validation passed
+[2025-09-01 11:46:16] INFO: Configuration validation passed
+[2025-09-01 11:46:16] INFO: Configuration loaded successfully
+[2025-09-01 11:46:16] INFO: Configuration loaded successfully
+[2025-09-01 11:46:16] INFO: Added allowlist network: 10.0.0.0/8
+[2025-09-01 11:46:16] INFO: Added allowlist network: 10.0.0.0/8
+[2025-09-01 11:46:16] INFO: Added allowlist network: 192.168.0.0/16
+[2025-09-01 11:46:16] INFO: Added allowlist network: 192.168.0.0/16
+[2025-09-01 11:46:16] INFO: Added allowlist network: 127.0.0.0/8
+[2025-09-01 11:46:16] INFO: Added allowlist network: 127.0.0.0/8
+[2025-09-01 11:46:16] INFO: Network detector initialized with interface: Ethernet
+[2025-09-01 11:46:16] INFO: Network detector initialized with interface: Ethernet
+[2025-09-01 11:46:16] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 11:46:16] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 11:46:16] INFO: Network detector initialized
+[2025-09-01 11:46:16] INFO: Network detector initialized
+[2025-09-01 11:46:16] INFO: Event writer initialized
+[2025-09-01 11:46:16] INFO: Event writer initialized
+[2025-09-01 11:46:16] INFO: LLM worker components initialized
+[2025-09-01 11:46:16] INFO: LLM worker components initialized
+[2025-09-01 11:53:23] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 11:53:23] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 11:53:23] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 11:53:23] INFO: Configuration validation passed
+[2025-09-01 11:53:23] INFO: Configuration loaded successfully
+[2025-09-01 11:53:23] INFO: Added allowlist network: 10.0.0.0/8
+[2025-09-01 11:53:23] INFO: Added allowlist network: 192.168.0.0/16
+[2025-09-01 11:53:23] INFO: Added allowlist network: 127.0.0.0/8
+[2025-09-01 11:53:23] INFO: Network detector initialized with interface: Ethernet
+[2025-09-01 11:53:23] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 11:53:23] INFO: Network detector initialized
+[2025-09-01 11:53:23] INFO: Event writer initialized
+[2025-09-01 11:53:23] INFO: LLM worker components initialized
+[2025-09-01 11:53:26] INFO: Starting packet capture with command: C:\Program Files\Wireshark\tshark.exe -i Ethernet -l -T json -n -o tcp.desegment_tcp_streams:true -o http.desegment_body:true -Y http or smtp or pop or imap or ftp or telnet -f tcp
+[2025-09-01 11:53:26] INFO: Tshark process started with PID: 18852
+[2025-09-01 11:53:57] INFO: Received signal 2, shutting down...
+[2025-09-01 11:53:57] INFO: Tshark process terminated
+[2025-09-01 11:53:59] INFO: Scanning for events in the last 10 minutes...
+[2025-09-01 11:53:59] INFO: Found 0 events in the time window.
+[2025-09-01 11:53:59] INFO: No recent events found to analyze.
+[2025-09-01 11:54:07] INFO: Created clearwatch folder structure
+[2025-09-01 11:54:07] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 11:54:07] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 11:54:07] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 11:54:07] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 11:54:07] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 11:54:07] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 11:54:07] INFO: Configuration validation passed
+[2025-09-01 11:54:07] INFO: Configuration validation passed
+[2025-09-01 11:54:07] INFO: Configuration loaded successfully
+[2025-09-01 11:54:07] INFO: Configuration loaded successfully
+[2025-09-01 11:54:07] INFO: Added allowlist network: 10.0.0.0/8
+[2025-09-01 11:54:07] INFO: Added allowlist network: 10.0.0.0/8
+[2025-09-01 11:54:07] INFO: Added allowlist network: 192.168.0.0/16
+[2025-09-01 11:54:07] INFO: Added allowlist network: 192.168.0.0/16
+[2025-09-01 11:54:07] INFO: Added allowlist network: 127.0.0.0/8
+[2025-09-01 11:54:07] INFO: Added allowlist network: 127.0.0.0/8
+[2025-09-01 11:54:07] INFO: Network detector initialized with interface: Ethernet
+[2025-09-01 11:54:07] INFO: Network detector initialized with interface: Ethernet
+[2025-09-01 11:54:07] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 11:54:07] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 11:54:07] INFO: Network detector initialized
+[2025-09-01 11:54:07] INFO: Network detector initialized
+[2025-09-01 11:54:07] INFO: Event writer initialized
+[2025-09-01 11:54:07] INFO: Event writer initialized
+[2025-09-01 11:54:07] INFO: LLM worker components initialized
+[2025-09-01 11:54:07] INFO: LLM worker components initialized
+[2025-09-01 12:06:14] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 12:06:14] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 12:06:14] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 12:06:14] INFO: Configuration validation passed
+[2025-09-01 12:06:14] INFO: Configuration loaded successfully
+[2025-09-01 12:06:14] INFO: Added allowlist network: 10.0.0.0/8
+[2025-09-01 12:06:14] INFO: Added allowlist network: 192.168.0.0/16
+[2025-09-01 12:06:14] INFO: Added allowlist network: 127.0.0.0/8
+[2025-09-01 12:06:14] INFO: Using interface override: Wi-Fi
+[2025-09-01 12:06:14] INFO: Network detector initialized with interface: Wi-Fi
+[2025-09-01 12:06:14] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 12:06:14] INFO: Network detector initialized
+[2025-09-01 12:06:14] INFO: Event writer initialized
+[2025-09-01 12:06:14] INFO: LLM worker components initialized
+[2025-09-01 12:06:14] INFO: Added allowlist network: 10.0.0.0/8
+[2025-09-01 12:06:14] INFO: Added allowlist network: 192.168.0.0/16
+[2025-09-01 12:06:14] INFO: Added allowlist network: 127.0.0.0/8
+[2025-09-01 12:06:14] INFO: Using interface override: Wi-Fi
+[2025-09-01 12:06:14] INFO: Network detector initialized with interface: Wi-Fi
+[2025-09-01 12:06:14] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 12:06:14] INFO: Network detector reinitialized with interface: Wi-Fi
+[2025-09-01 12:06:14] INFO: Starting packet capture with command: C:\Program Files\Wireshark\tshark.exe -i Wi-Fi -l -T json -n -o tcp.desegment_tcp_streams:true -o http.desegment_body:true -Y http or smtp or pop or imap or ftp or telnet -f tcp
+[2025-09-01 12:06:14] INFO: Tshark process started with PID: 4372
+[2025-09-01 12:06:43] INFO: Received signal 2, shutting down...
+[2025-09-01 12:06:43] INFO: Tshark process terminated
+[2025-09-01 12:07:05] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 12:07:05] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 12:07:05] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 12:07:05] INFO: Configuration validation passed
+[2025-09-01 12:07:05] INFO: Configuration loaded successfully
+[2025-09-01 12:07:05] INFO: Added allowlist network: 10.0.0.0/8
+[2025-09-01 12:07:05] INFO: Added allowlist network: 192.168.0.0/16
+[2025-09-01 12:07:05] INFO: Added allowlist network: 127.0.0.0/8
+[2025-09-01 12:07:06] INFO: Available interfaces: ['Local Area Connection* 10', 'Local Area Connection* 9', 'Local Area Connection* 8', 'Bluetooth Network Connection', 'Wi-Fi', 'VMware Network Adapter VMnet8', 'VMware Network Adapter VMnet1', 'Local Area Connection* 2', 'Local Area Connection* 1', 'Adapter for loopback traffic capture', 'Ethernet', 'Event Tracing for Windows (ETW']
+[2025-09-01 12:07:06] INFO: Active interfaces: ['VMware Network Adapter VMnet8', 'Wi-Fi', 'Ethernet']
+[2025-09-01 12:07:06] INFO: Using preferred interface: Wi-Fi
+[2025-09-01 12:07:06] INFO: Network detector initialized with interface: Wi-Fi
+[2025-09-01 12:07:06] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 12:07:06] INFO: Network detector initialized
+[2025-09-01 12:07:06] INFO: Event writer initialized
+[2025-09-01 12:07:06] INFO: LLM worker components initialized
+[2025-09-01 12:07:16] INFO: Added allowlist network: 10.0.0.0/8
+[2025-09-01 12:07:16] INFO: Added allowlist network: 192.168.0.0/16
+[2025-09-01 12:07:16] INFO: Added allowlist network: 127.0.0.0/8
+[2025-09-01 12:07:17] INFO: Using interface override: Wi-Fi
+[2025-09-01 12:07:17] INFO: Network detector initialized with interface: Wi-Fi
+[2025-09-01 12:07:17] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 12:07:17] INFO: Network detector reinitialized with interface: Wi-Fi
+[2025-09-01 12:07:17] INFO: Starting packet capture with command: C:\Program Files\Wireshark\tshark.exe -i Wi-Fi -l -T json -n -o tcp.desegment_tcp_streams:true -o http.desegment_body:true -Y http or smtp or pop or imap or ftp or telnet -f tcp
+[2025-09-01 12:07:17] INFO: Tshark process started with PID: 3716
+[2025-09-01 12:07:58] INFO: Received signal 2, shutting down...
+[2025-09-01 12:07:59] INFO: Tshark process terminated
+[2025-09-01 12:08:02] INFO: Scanning for events in the last 10 minutes...
+[2025-09-01 12:08:02] INFO: Found 0 events in the time window.
+[2025-09-01 12:08:02] INFO: No recent events found to analyze.
+[2025-09-01 12:09:17] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 12:09:17] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 12:09:17] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 12:09:17] INFO: Configuration validation passed
+[2025-09-01 12:09:17] INFO: Configuration loaded successfully
+[2025-09-01 12:09:17] ERROR: Failed to initialize components: 'NoneType' object is not iterable
+[2025-09-01 12:12:58] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 12:12:59] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 12:12:59] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 12:12:59] INFO: Configuration validation passed
+[2025-09-01 12:12:59] INFO: Configuration loaded successfully
+[2025-09-01 12:12:59] INFO: Using interface override: Wi-Fi
+[2025-09-01 12:12:59] INFO: Network detector initialized with interface: Wi-Fi
+[2025-09-01 12:12:59] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 12:12:59] INFO: Network detector initialized
+[2025-09-01 12:12:59] INFO: Event writer initialized
+[2025-09-01 12:12:59] INFO: LLM worker components initialized
+[2025-09-01 12:12:59] INFO: Using interface override: Wi-Fi
+[2025-09-01 12:12:59] INFO: Network detector initialized with interface: Wi-Fi
+[2025-09-01 12:12:59] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 12:12:59] INFO: Network detector reinitialized with interface: Wi-Fi
+[2025-09-01 12:12:59] INFO: Starting packet capture with command: C:\Program Files\Wireshark\tshark.exe -i Wi-Fi -l -T json -n -o tcp.desegment_tcp_streams:true -o http.desegment_body:true -Y http or smtp or pop or imap or ftp or telnet -f tcp
+[2025-09-01 12:12:59] INFO: Tshark process started with PID: 13500
+[2025-09-01 12:13:13] INFO: Received signal 2, shutting down...
+[2025-09-01 12:13:13] ERROR: Fatal error: 
+[2025-09-01 12:30:01] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 12:30:01] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 12:30:01] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 12:30:01] INFO: Configuration validation passed
+[2025-09-01 12:30:01] INFO: Configuration loaded successfully
+[2025-09-01 12:30:01] INFO: Using interface override: Wi-Fi
+[2025-09-01 12:30:01] INFO: Network detector initialized with interface: Wi-Fi
+[2025-09-01 12:30:01] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 12:30:01] INFO: Network detector initialized
+[2025-09-01 12:30:01] INFO: Event writer initialized
+[2025-09-01 12:30:01] INFO: LLM worker components initialized
+[2025-09-01 12:30:01] INFO: Using interface override: Wi-Fi
+[2025-09-01 12:30:01] INFO: Network detector initialized with interface: Wi-Fi
+[2025-09-01 12:30:01] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 12:30:01] INFO: Network detector reinitialized with interface: Wi-Fi
+[2025-09-01 12:30:01] INFO: Starting packet capture with command: C:\Program Files\Wireshark\tshark.exe -i Wi-Fi -l -T json -n -o tcp.desegment_tcp_streams:true -o http.desegment_body:true -Y http or smtp or pop or imap or ftp or telnet -f tcp
+[2025-09-01 12:30:01] INFO: Tshark process started with PID: 19676
+[2025-09-01 12:35:13] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 12:35:14] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 12:35:14] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 12:35:14] INFO: Configuration validation passed
+[2025-09-01 12:35:14] INFO: Configuration loaded successfully
+[2025-09-01 12:35:14] INFO: Using interface override: Wi-Fi
+[2025-09-01 12:35:14] INFO: Network detector initialized with interface: Wi-Fi
+[2025-09-01 12:35:14] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 12:35:14] INFO: Network detector initialized
+[2025-09-01 12:35:14] INFO: Event writer initialized
+[2025-09-01 12:35:14] INFO: LLM worker components initialized
+[2025-09-01 12:35:14] INFO: Using interface override: Wi-Fi
+[2025-09-01 12:35:14] INFO: Network detector initialized with interface: Wi-Fi
+[2025-09-01 12:35:14] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 12:35:14] INFO: Network detector reinitialized with interface: Wi-Fi
+[2025-09-01 12:35:14] INFO: Starting packet capture with command: C:\Program Files\Wireshark\tshark.exe -i Wi-Fi -l -T json -n -o tcp.desegment_tcp_streams:true -o http.desegment_body:true -Y http or smtp or pop or imap or ftp or telnet or smb or dns -f tcp
+[2025-09-01 12:35:14] INFO: Tshark process started with PID: 13584
+[2025-09-01 12:36:28] INFO: Logging to file: clearwatch\logs\clearwatch.log
+[2025-09-01 12:36:29] INFO: Loading platform-specific config: config\config.windows.yaml
+[2025-09-01 12:36:29] INFO: Configuration loaded successfully from config\config.windows.yaml
+[2025-09-01 12:36:29] INFO: Configuration validation passed
+[2025-09-01 12:36:29] INFO: Configuration loaded successfully
+[2025-09-01 12:36:33] INFO: Available interfaces: ['Local Area Connection* 10', 'Local Area Connection* 9', 'Local Area Connection* 8', 'Bluetooth Network Connection', 'Wi-Fi', 'VMware Network Adapter VMnet8', 'VMware Network Adapter VMnet1', 'Local Area Connection* 2', 'Local Area Connection* 1', 'Adapter for loopback traffic capture', 'Ethernet', 'Event Tracing for Windows (ETW']
+[2025-09-01 12:36:33] INFO: Active interfaces: ['Ethernet', 'Wi-Fi', 'VMware Network Adapter VMnet8']
+[2025-09-01 12:36:33] INFO: Using preferred interface: Wi-Fi
+[2025-09-01 12:36:33] INFO: Network detector initialized with interface: Wi-Fi
+[2025-09-01 12:36:33] INFO: Tshark path: C:\Program Files\Wireshark\tshark.exe
+[2025-09-01 12:36:33] INFO: Network detector initialized
+[2025-09-01 12:36:33] INFO: Event writer initialized
+[2025-09-01 12:36:33] INFO: LLM worker components initialized

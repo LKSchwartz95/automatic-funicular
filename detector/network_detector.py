@@ -7,23 +7,58 @@ from datetime import datetime
 
 from .event_model import Event
 from .config import ConfigLoader
-from .rules import http_rules, smtp_rules, pop3_imap_rules, ftp_rules, telnet_rules, tls_rules
+from .rules import http_rules, smtp_rules, pop3_imap_rules, ftp_rules, telnet_rules, tls_rules, smb_rules, dns_rules
+from .interface_detector import InterfaceDetector
 
 logger = logging.getLogger(__name__)
 
 
 class NetworkDetector:
-    def __init__(self, config: ConfigLoader):
+    def __init__(self, config: ConfigLoader, interface_override: Optional[str] = None):
         self.config = config
         self.allowlist_networks = self._build_allowlist()
         self.credential_keys = set(config.get_credential_keys())
         self.max_body_size = config.get_max_body_size()
         
+        # Initialize interface detector
+        self.interface_detector = InterfaceDetector(config.get('detector.tshark_path'))
+        
+        # Determine which interface to use
+        self.interface = self._determine_interface(interface_override)
+        
         # Build tshark command
         self.tshark_cmd = self._build_tshark_command()
         
-        logger.info(f"Network detector initialized with interface: {config.get('detector.interface')}")
+        logger.info(f"Network detector initialized with interface: {self.interface}")
         logger.info(f"Tshark path: {config.get('detector.tshark_path')}")
+
+    def _determine_interface(self, interface_override: Optional[str] = None) -> str:
+        """Determine which network interface to use for packet capture."""
+        # If interface override is provided, use it
+        if interface_override:
+            logger.info(f"Using interface override: {interface_override}")
+            return interface_override
+            
+        # Get configured interface from config
+        configured_interface = self.config.get('detector.interface')
+        
+        # Try to find the best interface
+        best_interface = self.interface_detector.find_best_interface(configured_interface)
+        
+        if best_interface:
+            return best_interface
+        else:
+            # Fallback to configured interface
+            logger.warning(f"Could not auto-detect interface, using configured: {configured_interface}")
+            return configured_interface
+
+    def get_available_interfaces(self) -> List[Dict[str, str]]:
+        """Get list of available network interfaces."""
+        return self.interface_detector.get_available_interfaces()
+    
+    def get_active_interfaces(self) -> List[Dict[str, str]]:
+        """Get list of active network interfaces."""
+        return self.interface_detector.get_active_interfaces()
 
     def _build_allowlist(self) -> List[ipaddress.IPv4Network]:
         """Build allowlist networks from configuration."""
@@ -44,7 +79,7 @@ class NetworkDetector:
         # Base command
         cmd = [
             detector_config["tshark_path"],
-            "-i", detector_config["interface"],
+            "-i", self.interface,
             "-l",  # line-buffered
             "-T", "json",
             "-n",  # disable name resolution for performance
@@ -67,6 +102,10 @@ class NetworkDetector:
         if self.config.is_protocol_enabled("tls"):
             # This filter captures the TLS handshake (ClientHello is type 1)
             display_filters.append("tls.handshake.type == 1")
+        if self.config.is_protocol_enabled("smb"):
+            display_filters.append("smb")
+        if self.config.is_protocol_enabled("dns"):
+            display_filters.append("dns")
 
         if display_filters:
             cmd.extend(["-Y", " or ".join(display_filters)])
@@ -214,6 +253,20 @@ class NetworkDetector:
             min_version = tls_config.get("min_version", "1.2")
             require_sni = tls_config.get("require_sni", False)
             event = tls_rules.process_tls_packet(layers["tls"], packet_info, min_version, require_sni)
+            if event: return event
+
+        # SMB
+        if self.config.is_protocol_enabled("smb") and "smb" in layers:
+            smb_config = self.config.get("detector.protocols.smb", {})
+            detect_plaintext_auth = smb_config.get("detect_plaintext_auth", True)
+            event = smb_rules.process_smb_packet(layers["smb"], packet_info, detect_plaintext_auth)
+            if event: return event
+
+        # DNS
+        if self.config.is_protocol_enabled("dns") and "dns" in layers:
+            dns_config = self.config.get("detector.protocols.dns", {})
+            detect_tunneling = dns_config.get("detect_tunneling", True)
+            event = dns_rules.process_dns_packet(layers["dns"], packet_info, detect_tunneling)
             if event: return event
                 
         return None
