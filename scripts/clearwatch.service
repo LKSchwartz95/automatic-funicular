@@ -1,0 +1,15 @@
+[Unit]
+Description=Clearwatch Network Security Monitor
+After=network.target
+
+[Service]
+Type=simple
+User=your_user # Replace with the user you want to run Clearwatch as
+Group=your_group # Replace with the group
+ExecStart=/usr/bin/python3 /path/to/your/clearwatch/main.py --mode watch
+WorkingDirectory=/path/to/your/clearwatch
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

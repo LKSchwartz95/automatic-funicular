@@ -1,13 +1,13 @@
 import subprocess
 import json
 import ipaddress
-import hashlib
 import logging
 from typing import Dict, Any, List, Optional, Generator
 from datetime import datetime
 
 from .event_model import Event
 from .config import ConfigLoader
+from .rules import http_rules, smtp_rules, pop3_imap_rules, ftp_rules, telnet_rules, tls_rules
 
 logger = logging.getLogger(__name__)
 
@@ -41,18 +41,36 @@ class NetworkDetector:
         """Build tshark command with proper options."""
         detector_config = self.config.get_detector_config()
         
+        # Base command
         cmd = [
             detector_config["tshark_path"],
             "-i", detector_config["interface"],
             "-l",  # line-buffered
             "-T", "json",
-            "-Y", "tcp",  # display filter
             "-n",  # disable name resolution for performance
             "-o", "tcp.desegment_tcp_streams:true",
             "-o", "http.desegment_body:true",
-            "-o", "http.tls.port:443",
         ]
-        
+
+        # Display filter for all enabled TCP-based protocols
+        display_filters = []
+        if self.config.is_protocol_enabled("http"):
+            display_filters.append("http")
+        if self.config.is_protocol_enabled("smtp"):
+            display_filters.append("smtp")
+        if self.config.is_protocol_enabled("imap_pop3"):
+            display_filters.append("pop or imap")
+        if self.config.is_protocol_enabled("ftp"):
+            display_filters.append("ftp")
+        if self.config.is_protocol_enabled("telnet"):
+            display_filters.append("telnet")
+        if self.config.is_protocol_enabled("tls"):
+            # This filter captures the TLS handshake (ClientHello is type 1)
+            display_filters.append("tls.handshake.type == 1")
+
+        if display_filters:
+            cmd.extend(["-Y", " or ".join(display_filters)])
+
         # Add BPF filter if specified
         if detector_config.get("bpf"):
             cmd.extend(["-f", detector_config["bpf"]])
@@ -67,256 +85,10 @@ class NetworkDetector:
         except ValueError:
             return False
 
-    def _parse_headers(self, fields: List[Dict[str, Any]]) -> Dict[str, str]:
-        """Parse HTTP headers from tshark fields."""
-        headers = {}
-        for field in fields:
-            if not isinstance(field, dict):
-                continue
-                
-            name = field.get("name", "")
-            if not name.lower().startswith("http/"):
-                continue
-                
-            show = field.get("show", "")
-            if not show:
-                continue
-                
-            # Handle different header formats
-            if ":" in show:
-                # Format: 'Host: example.com'
-                parts = show.split(":", 1)
-                if len(parts) == 2:
-                    headers[parts[0].strip()] = parts[1].strip()
-            else:
-                # Direct field like http.host
-                field_name = name.split(".")[-1]
-                if field_name in ("host", "authorization", "user_agent", "content_type"):
-                    headers[field_name.replace("_", "-").title()] = show
-                    
-        return headers
-
-    def _detect_http_basic_auth(self, headers: Dict[str, str]) -> bool:
-        """Detect HTTP Basic Authentication."""
-        auth_header = headers.get("Authorization") or headers.get("authorization")
-        return isinstance(auth_header, str) and auth_header.startswith("Basic ")
-
-    def _scan_body_for_credentials(self, body: str) -> List[str]:
-        """Scan HTTP body for credential keys."""
-        found_keys = []
-        
-        # Form-style key=value scanning
-        for part in body.split("&"):
-            if "=" in part:
-                key, value = part.split("=", 1)
-                key = key.lower().strip()
-                if key in self.credential_keys and value.strip():
-                    found_keys.append(key)
-                    
-        # JSON-like key scanning
-        for key in self.credential_keys:
-            token = f'"{key}"'
-            if token in body:
-                found_keys.append(key)
-                
-        return found_keys
-
-    def _process_http_packet(self, http_layer: Dict[str, Any], packet_info: Dict[str, Any]) -> Optional[Event]:
-        """Process HTTP packet for security events."""
-        if not self.config.is_protocol_enabled("http"):
-            return None
-            
-        # Extract basic packet info
-        src_ip = packet_info.get("src_ip")
-        src_port = packet_info.get("src_port")
-        dst_ip = packet_info.get("dst_ip")
-        dst_port = packet_info.get("dst_port")
-        
-        if not all([src_ip, src_port, dst_ip, dst_port]):
-            return None
-            
-        # Check if destination is allowlisted
-        if self._is_allowlisted(dst_ip):
-            return None
-            
-        # Parse headers
-        fields = http_layer.get("http", [])
-        if not isinstance(fields, list):
-            return None
-            
-        headers = self._parse_headers(fields)
-        host = headers.get("Host")
-        
-        # Check for Basic Auth
-        if self._detect_http_basic_auth(headers):
-            return Event.create_http_basic_auth(
-                src_ip=src_ip,
-                src_port=src_port,
-                dst_ip=dst_ip,
-                dst_port=dst_port,
-                host=host
-            )
-            
-        # Check for credentials in body
-        body = None
-        file_data = http_layer.get("http.file_data")
-        if file_data:
-            if isinstance(file_data, list):
-                body = "\n".join(file_data)
-            else:
-                body = str(file_data)
-                
-        if body and len(body.encode("utf-8")) <= self.max_body_size:
-            found_keys = self._scan_body_for_credentials(body)
-            if found_keys:
-                return Event.create_http_credential_key(
-                    src_ip=src_ip,
-                    src_port=src_port,
-                    dst_ip=dst_ip,
-                    dst_port=dst_port,
-                    host=host,
-                    keys_found=found_keys,
-                    body_snippet=body[:256]
-                )
-                
-        return None
-
-    def _process_smtp_packet(self, smtp_layer: Dict[str, Any], packet_info: Dict[str, Any]) -> Optional[Event]:
-        """Process SMTP packet for security events."""
-        if not self.config.is_protocol_enabled("smtp"):
-            return None
-            
-        # Extract packet info
-        src_ip = packet_info.get("src_ip")
-        src_port = packet_info.get("src_port")
-        dst_ip = packet_info.get("dst_ip")
-        dst_port = packet_info.get("dst_port")
-        
-        if not all([src_ip, src_port, dst_ip, dst_port]):
-            return None
-            
-        # Check if destination is allowlisted
-        if self._is_allowlisted(dst_ip):
-            return None
-            
-        # Collect SMTP content
-        content_lines = []
-        for key, value in smtp_layer.items():
-            if isinstance(value, list):
-                content_lines.extend(value)
-            elif isinstance(value, str):
-                content_lines.append(value)
-                
-        content = "\n".join(content_lines).upper()
-        
-        # Check for AUTH before STARTTLS
-        if "AUTH " in content and "STARTTLS" not in content:
-            return Event.create_smtp_no_starttls(
-                src_ip=src_ip,
-                src_port=src_port,
-                dst_ip=dst_ip,
-                dst_port=dst_port
-            )
-            
-        return None
-
-    def _process_pop3_imap_packet(self, pop3_layer: Dict[str, Any], imap_layer: Dict[str, Any], packet_info: Dict[str, Any]) -> Optional[Event]:
-        """Process POP3/IMAP packet for security events."""
-        src_ip = packet_info.get("src_ip")
-        src_port = packet_info.get("src_port")
-        dst_ip = packet_info.get("dst_ip")
-        dst_port = packet_info.get("dst_port")
-        
-        if not all([src_ip, src_port, dst_ip, dst_port]):
-            return None
-            
-        # Check if destination is allowlisted
-        if self._is_allowlisted(dst_ip):
-            return None
-            
-        # Process POP3
-        if pop3_layer and self.config.is_protocol_enabled("imap_pop3"):
-            content = "\n".join(str(v) for v in pop3_layer.values() if isinstance(v, str)).upper()
-            if ("USER " in content or "PASS " in content) and "STLS" not in content:
-                return Event.create_pop3_clear_creds(
-                    src_ip=src_ip,
-                    src_port=src_port,
-                    dst_ip=dst_ip,
-                    dst_port=dst_port
-                )
-                
-        # Process IMAP
-        if imap_layer and self.config.is_protocol_enabled("imap_pop3"):
-            content = "\n".join(str(v) for v in imap_layer.values() if isinstance(v, str)).upper()
-            if " LOGIN " in content and "STARTTLS" not in content:
-                return Event.create_imap_clear_login(
-                    src_ip=src_ip,
-                    src_port=src_port,
-                    dst_ip=dst_ip,
-                    dst_port=dst_port
-                )
-                
-        return None
-
-    def _process_ftp_packet(self, ftp_layer: Dict[str, Any], packet_info: Dict[str, Any]) -> Optional[Event]:
-        """Process FTP packet for security events."""
-        if not self.config.is_protocol_enabled("ftp"):
-            return None
-            
-        src_ip = packet_info.get("src_ip")
-        src_port = packet_info.get("src_port")
-        dst_ip = packet_info.get("dst_ip")
-        dst_port = packet_info.get("dst_port")
-        
-        if not all([src_ip, src_port, dst_ip, dst_port]):
-            return None
-            
-        # Check if destination is allowlisted
-        if self._is_allowlisted(dst_ip):
-            return None
-            
-        content = "\n".join(str(v) for v in ftp_layer.values() if isinstance(v, str)).upper()
-        if "USER " in content or "PASS " in content:
-            return Event.create_ftp_clear_creds(
-                src_ip=src_ip,
-                src_port=src_port,
-                dst_ip=dst_ip,
-                dst_port=dst_port
-            )
-            
-        return None
-
-    def _process_telnet_packet(self, telnet_layer: Dict[str, Any], packet_info: Dict[str, Any]) -> Optional[Event]:
-        """Process TELNET packet for security events."""
-        if not self.config.is_protocol_enabled("telnet"):
-            return None
-            
-        src_ip = packet_info.get("src_ip")
-        src_port = packet_info.get("src_port")
-        dst_ip = packet_info.get("dst_ip")
-        dst_port = packet_info.get("dst_port")
-        
-        if not all([src_ip, src_port, dst_ip, dst_port]):
-            return None
-            
-        # Check if destination is allowlisted
-        if self._is_allowlisted(dst_ip):
-            return None
-            
-        content = "\n".join(str(v) for v in telnet_layer.values() if isinstance(v, str)).lower()
-        if "login:" in content or "password:" in content:
-            return Event.create_telnet_clear_login(
-                src_ip=src_ip,
-                src_port=src_port,
-                dst_ip=dst_ip,
-                dst_port=dst_port
-            )
-            
-        return None
-
     def _extract_packet_info(self, packet: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """Extract basic packet information from tshark output."""
         try:
+            timestamp = datetime.fromtimestamp(float(packet["_source"]["layers"]["frame"]["frame.time_epoch"]))
             layers = packet.get("_source", {}).get("layers", {})
             if not isinstance(layers, dict):
                 return None
@@ -340,6 +112,7 @@ class NetworkDetector:
                 return None
                 
             return {
+                "timestamp": timestamp,
                 "src_ip": src_ip,
                 "dst_ip": dst_ip,
                 "src_port": src_port,
@@ -369,23 +142,14 @@ class NetworkDetector:
             # Process output line by line
             for line in process.stdout:
                 try:
-                    # Parse JSON output
-                    data = json.loads(line.strip())
-                    
-                    # Handle array of packets
-                    if isinstance(data, list):
-                        packets = data
-                    else:
-                        packets = [data]
-                        
-                    # Process each packet
-                    for packet in packets:
-                        event = self._process_packet(packet)
+                    # tshark can sometimes output multiple JSON objects on one line
+                    for jsonObj in json.loads(f'[{line.strip().replace("}{", "},{")}]'):
+                        event = self._process_packet(jsonObj)
                         if event:
                             yield event
                             
                 except json.JSONDecodeError as e:
-                    logger.debug(f"JSON decode error: {e}")
+                    logger.debug(f"JSON decode error on line: {line.strip()} - {e}")
                     continue
                 except Exception as e:
                     logger.error(f"Error processing packet: {e}")
@@ -395,7 +159,7 @@ class NetworkDetector:
             logger.error(f"Error starting packet capture: {e}")
             raise
         finally:
-            if 'process' in locals():
+            if 'process' in locals() and process.poll() is None:
                 process.terminate()
                 logger.info("Tshark process terminated")
 
@@ -405,42 +169,51 @@ class NetworkDetector:
         if not packet_info:
             return None
             
+        # Check if destination is allowlisted
+        if self._is_allowlisted(packet_info["dst_ip"]):
+            return None
+            
         layers = packet_info["layers"]
         
-        # Process HTTP
-        http_layer = layers.get("http")
-        if http_layer:
-            event = self._process_http_packet(http_layer, packet_info)
-            if event:
-                return event
-                
-        # Process SMTP
-        smtp_layer = layers.get("smtp")
-        if smtp_layer:
-            event = self._process_smtp_packet(smtp_layer, packet_info)
-            if event:
-                return event
-                
-        # Process POP3/IMAP
-        pop3_layer = layers.get("pop") or layers.get("pop3")
-        imap_layer = layers.get("imap")
-        if pop3_layer or imap_layer:
-            event = self._process_pop3_imap_packet(pop3_layer, imap_layer, packet_info)
-            if event:
-                return event
-                
-        # Process FTP
-        ftp_layer = layers.get("ftp")
-        if ftp_layer:
-            event = self._process_ftp_packet(ftp_layer, packet_info)
-            if event:
-                return event
-                
-        # Process TELNET
-        telnet_layer = layers.get("telnet")
-        if telnet_layer:
-            event = self._process_telnet_packet(telnet_layer, packet_info)
-            if event:
-                return event
+        # Process protocols based on configuration
+        event: Optional[Event] = None
+
+        # HTTP
+        if self.config.is_protocol_enabled("http") and "http" in layers:
+            event = http_rules.process_http_packet(
+                layers["http"], packet_info, self.credential_keys, self.max_body_size
+            )
+            if event: return event
+
+        # SMTP
+        if self.config.is_protocol_enabled("smtp") and "smtp" in layers:
+            event = smtp_rules.process_smtp_packet(layers["smtp"], packet_info)
+            if event: return event
+
+        # POP3/IMAP
+        if self.config.is_protocol_enabled("imap_pop3"):
+            pop3_layer = layers.get("pop") or layers.get("pop3")
+            imap_layer = layers.get("imap")
+            if pop3_layer or imap_layer:
+                event = pop3_imap_rules.process_pop3_imap_packet(pop3_layer, imap_layer, packet_info)
+                if event: return event
+
+        # FTP
+        if self.config.is_protocol_enabled("ftp") and "ftp" in layers:
+            event = ftp_rules.process_ftp_packet(layers["ftp"], packet_info)
+            if event: return event
+
+        # TELNET
+        if self.config.is_protocol_enabled("telnet") and "telnet" in layers:
+            event = telnet_rules.process_telnet_packet(layers["telnet"], packet_info)
+            if event: return event
+
+        # TLS
+        if self.config.is_protocol_enabled("tls") and "tls" in layers:
+            tls_config = self.config.get("detector.protocols.tls", {})
+            min_version = tls_config.get("min_version", "1.2")
+            require_sni = tls_config.get("require_sni", False)
+            event = tls_rules.process_tls_packet(layers["tls"], packet_info, min_version, require_sni)
+            if event: return event
                 
         return None

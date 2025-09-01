@@ -168,3 +168,47 @@ class Event(BaseModel):
             dst_port=dst_port,
             context={"protocol": "TELNET"},
         )
+
+    @classmethod
+    def create_tls_weak_version(
+        cls,
+        src_ip: str,
+        src_port: int,
+        dst_ip: str,
+        dst_port: int,
+        version_detected: str,
+        min_required: str,
+    ) -> "Event":
+        return cls(
+            ts=datetime.now(),
+            severity="MED",
+            rule="tls.weak_version",
+            src_ip=src_ip,
+            src_port=src_port,
+            dst_ip=dst_ip,
+            dst_port=dst_port,
+            context={
+                "protocol": "TLS",
+                "version_detected": version_detected,
+                "minimum_required": min_required,
+            },
+        )
+
+    @classmethod
+    def create_tls_missing_sni(
+        cls,
+        src_ip: str,
+        src_port: int,
+        dst_ip: str,
+        dst_port: int,
+    ) -> "Event":
+        return cls(
+            ts=datetime.now(),
+            severity="LOW",
+            rule="tls.missing_sni",
+            src_ip=src_ip,
+            src_port=src_port,
+            dst_ip=dst_ip,
+            dst_port=dst_port,
+            context={"protocol": "TLS"},
+        )
