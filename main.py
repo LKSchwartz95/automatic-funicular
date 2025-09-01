@@ -289,12 +289,23 @@ class Clearwatch:
         # Start monitoring
         self.running = True
         event_count = 0
+        status_interval = 30  # seconds
+        start_time = time.time()
+        last_status_time = start_time
         
         try:
             for event in self.detector.start_capture():
                 if not self.running:
                     break
-                    
+
+                current_time = time.time()
+                elapsed = current_time - start_time
+                if event_count == 0 and current_time - last_status_time >= status_interval:
+                    print(
+                        f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] INFO: No detections yet; capture is active ({int(elapsed)}s elapsed)."
+                    )
+                    last_status_time = current_time
+
                 # Write event to file
                 self.writer.write_line(event.to_jsonable())
                 event_count += 1
