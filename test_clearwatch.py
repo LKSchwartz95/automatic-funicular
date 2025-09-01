@@ -13,6 +13,7 @@ import threading
 import json
 from pathlib import Path
 from datetime import datetime
+import argparse
 
 class ClearwatchTester:
     def __init__(self):
@@ -170,34 +171,53 @@ class ClearwatchTester:
         """Run a comprehensive test of Clearwatch."""
         print("🚀 Starting Comprehensive Clearwatch Test")
         print("=" * 50)
-        
+
         # Step 1: Check initial status
         self.check_clearwatch_status()
-        
+
         # Step 2: Start test server
         if not self.start_test_server():
             print("❌ Cannot proceed without test server")
-            return
-        
+            return False
+
         try:
             # Step 3: Generate test traffic
             self.generate_test_traffic()
-            
+
             # Step 4: Monitor for events
             self.monitor_events(15)  # Monitor for 15 seconds
-            
+
             # Step 5: Final status check
             print("\n" + "=" * 50)
             print("📊 Final Status Check")
             self.check_clearwatch_status()
-            
+        except Exception as e:
+            print(f"❌ Error during comprehensive test: {e}")
+            return False
         finally:
             # Cleanup
             self.stop_test_server()
-        
+
         print("\n✅ Test completed!")
+        return True
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Clearwatch Testing and Monitoring Tool"
+    )
+    parser.add_argument(
+        "--auto",
+        action="store_true",
+        help="Run comprehensive test without prompts",
+    )
+    args = parser.parse_args()
+
+    tester = ClearwatchTester()
+
+    if args.auto:
+        success = tester.run_comprehensive_test()
+        raise SystemExit(0 if success else 1)
+
     print("Clearwatch Testing and Monitoring Tool")
     print("=====================================")
     print()
@@ -208,9 +228,7 @@ def main():
     print("4. 👀 Monitor for security events")
     print("5. 📊 Analyze detected events")
     print()
-    
-    tester = ClearwatchTester()
-    
+
     while True:
         print("\nChoose an option:")
         print("1. Run comprehensive test")
@@ -219,9 +237,9 @@ def main():
         print("4. Generate test traffic only")
         print("5. Monitor events only")
         print("6. Exit")
-        
+
         choice = input("\nEnter your choice (1-6): ").strip()
-        
+
         if choice == "1":
             tester.run_comprehensive_test()
         elif choice == "2":
@@ -235,7 +253,9 @@ def main():
                 tester.generate_test_traffic()
                 tester.stop_test_server()
         elif choice == "5":
-            duration = input("Enter monitoring duration in seconds (default 30): ").strip()
+            duration = input(
+                "Enter monitoring duration in seconds (default 30): "
+            ).strip()
             try:
                 duration = int(duration) if duration else 30
                 tester.monitor_events(duration)
