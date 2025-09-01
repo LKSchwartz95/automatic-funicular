@@ -395,12 +395,55 @@ clearwatch/
 - [ ] Machine learning-based anomaly detection
 - [ ] Multi-interface monitoring support
 
+## Current Development Status
+
+**Clearwatch is in active development with core functionality complete.** The project has successfully implemented Sprints 1-3 and is ready for production use.
+
+### 🎯 **Immediate Next Steps (Sprint 4)**
+1. **Fix TLS detection bug** - Update `detector/rules/tls_rules.py` to use proper Event factory methods
+2. **Add unit tests** - Create comprehensive test suite for protocol detection rules
+3. **Linux/macOS configs** - Add `config/config.yaml` for cross-platform support
+4. **Webhook integration** - Add real-time alert notifications
+5. **Performance optimization** - Enhance memory management and capture efficiency
+
+### 🔧 **Development Setup**
+```bash
+# Clone the repository
+git clone <repository-url>
+cd clearwatch
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run in development mode
+python main.py --mode watch
+```
+
+### 🧪 **Testing**
+```bash
+# Test HTTP Basic Auth detection
+curl -u alice:secret http://127.0.0.1:8080/
+
+# Test HTTP credential detection
+curl -d "user=alice&password=hunter2" -H "Content-Type: application/x-www-form-urlencoded" http://127.0.0.1:8080/login
+
+# Test API endpoints
+curl http://127.0.0.1:8088/alerts/recent
+```
+
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Implement changes with tests
 4. Submit a pull request
+
+### Development Guidelines
+- Follow the existing code structure and patterns
+- Add unit tests for new detection rules
+- Update documentation for new features
+- Ensure cross-platform compatibility
+- Maintain security and privacy standards
 
 ## License
 
