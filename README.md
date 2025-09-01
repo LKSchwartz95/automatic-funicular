@@ -101,7 +101,28 @@ Choose option `1` to start monitoring:
 - Displays real-time security alerts
 - Creates rotating JSONL event files
 
-### 3. Test Detection
+### 3. Non-Interactive Mode (New!)
+
+For automation and service deployment:
+
+```bash
+# Start directly in Watch Mode
+python main.py --mode watch
+
+# Start directly in Analysis Mode
+python main.py --mode analysis
+
+# Use custom configuration directory
+python main.py --config /path/to/config --mode watch
+```
+
+### 4. API Server (Optional)
+
+If enabled in configuration, the API server runs automatically in the background:
+- Access recent alerts: `http://127.0.0.1:8088/alerts/recent`
+- Get LLM analysis: `POST http://127.0.0.1:8088/alerts/explain`
+
+### 5. Test Detection
 
 Generate test traffic to verify detection:
 
@@ -115,7 +136,7 @@ curl -u alice:secret http://127.0.0.1:8080/
 curl -d "user=alice&password=hunter2" -H "Content-Type: application/x-www-form-urlencoded" http://127.0.0.1:8080/login
 ```
 
-### 4. View Results
+### 6. View Results
 
 - **Console**: Real-time alerts with timestamps and severity
 - **Files**: `clearwatch/events/` contains JSONL event files
@@ -236,18 +257,43 @@ ftp 127.0.0.1 2121
 
 ```
 clearwatch/
-├── detector/           # Network detection components
+├── detector/           # Network detection components ✅
 │   ├── __init__.py
-│   ├── config.py      # Configuration loader
-│   ├── event_model.py # Event data models
-│   ├── network_detector.py # tshark integration
-│   └── writer.py      # File rotation and writing
-├── worker/            # LLM integration (Sprint 2)
-├── api/               # FastAPI server (Sprint 3)
-├── config/            # Configuration files
-├── main.py            # Main program entry point
-└── pyproject.toml     # Project configuration
+│   ├── config.py      # Configuration loader ✅
+│   ├── event_model.py # Event data models ✅
+│   ├── network_detector.py # tshark integration ✅
+│   ├── writer.py      # File rotation and writing ✅
+│   └── rules/         # Protocol-specific detection rules ✅
+│       ├── __init__.py
+│       ├── http_rules.py      # HTTP Basic Auth & credentials ✅
+│       ├── smtp_rules.py      # SMTP AUTH before STARTTLS ✅
+│       ├── pop3_imap_rules.py # POP3/IMAP plaintext detection ✅
+│       ├── ftp_rules.py       # FTP USER/PASS detection ✅
+│       ├── telnet_rules.py    # TELNET login detection ✅
+│       └── tls_rules.py       # TLS version & SNI detection ⚠️
+├── worker/            # LLM integration ✅
+│   ├── __init__.py
+│   ├── llm_client.py  # Ollama client ✅
+│   ├── prompts.py     # Security-focused prompts ✅
+│   └── report_generator.py # Report generation ✅
+├── api/               # FastAPI server ✅
+│   ├── __init__.py
+│   └── server.py      # RESTful API endpoints ✅
+├── config/            # Configuration files ✅
+│   └── config.windows.yaml # Windows configuration ✅
+├── scripts/           # Deployment scripts ✅
+│   ├── __init__.py
+│   ├── clearwatch_task.xml # Windows Task Scheduler ✅
+│   └── clearwatch.service  # Linux systemd service ✅
+├── main.py            # Main program entry point ✅
+├── pyproject.toml     # Project configuration ✅
+└── requirements.txt   # Python dependencies ✅
 ```
+
+**Legend:**
+- ✅ **Complete** - Fully implemented and functional
+- ⚠️ **Partial** - Implemented but has minor issues
+- ❌ **Missing** - Not yet implemented
 
 ### Adding New Detection Rules
 
